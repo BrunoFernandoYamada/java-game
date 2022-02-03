@@ -10,10 +10,22 @@ public class Server {
     private final int PORT = 51734;
     private ServerSideConnection player1;
     private ServerSideConnection player2;
+    private int turnsMade;
+    private int maxTurns;
+    private int[] values;
 
     public Server() {
         System.out.println("----Game Server----");
         numPlayers = 0;
+        turnsMade = 0;
+        maxTurns = 0;
+        values = new int[4];
+
+        for (int i = 0; i < values.length; i++) {
+            values[i] = (int) Math.ceil(Math.random() * 100);
+            System.out.println("Value #" + (i + 1) + " is " + values[i]);
+        }
+
         try {
             serverSocket = new ServerSocket(PORT);
         } catch (IOException ex){
@@ -72,7 +84,16 @@ public class Server {
         public void run() {
             try {
                 dataOutputStream.writeInt(playerID);
+                dataOutputStream.writeInt(maxTurns);
+                dataOutputStream.writeInt(values[0]);
+                dataOutputStream.writeInt(values[1]);
+                dataOutputStream.writeInt(values[2]);
+                dataOutputStream.writeInt(values[3]);
                 dataOutputStream.flush();
+
+                while (true) {
+
+                }
             } catch (IOException ex) {
                 System.out.println("IOException from SSC run() ");
             }
