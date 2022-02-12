@@ -95,6 +95,7 @@ public class Player extends JFrame {
 
                 myPoints += values[bNum - 1];
                 System.out.println("My points " + myPoints);
+                clientSideConnection.sendButtonNum(bNum);
             }
         };
 
@@ -152,9 +153,13 @@ public class Player extends JFrame {
             }
         }
 
-
-
+        public void sendButtonNum (int n) {
+            try {
+                dataOutputStream.writeInt(n);
+                dataOutputStream.flush();
+            } catch (IOException ex) {
+                System.out.println("IOException from sendButtonNum() CSC");
+            }
+        }
     }
-
-
 }

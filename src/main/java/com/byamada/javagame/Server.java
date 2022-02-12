@@ -13,6 +13,9 @@ public class Server {
     private int turnsMade;
     private int maxTurns;
     private int[] values;
+    private int player1ButtonNum;
+    private int player2ButtonNum;
+
 
     public Server() {
         System.out.println("----Game Server----");
@@ -92,8 +95,15 @@ public class Server {
                 dataOutputStream.flush();
 
                 while (true) {
-
+                    if(playerID == 1) {
+                        player1ButtonNum = dataInputStream.readInt();
+                        System.out.println("Player 1 clicked button #" + player1ButtonNum);
+                    } else {
+                        player2ButtonNum = dataInputStream.readInt();
+                        System.out.println("Player 2 clicked button #" + player2ButtonNum);
+                    }
                 }
+
             } catch (IOException ex) {
                 System.out.println("IOException from SSC run() ");
             }
