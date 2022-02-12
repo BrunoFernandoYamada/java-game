@@ -2,6 +2,8 @@ package com.byamada.javagame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -23,6 +25,7 @@ public class Player extends JFrame {
     private int turnsMade;
     private int myPoints;
     private int opponentPoints;
+    private boolean buttonsEnabled;
 
     private ClientSideConnection clientSideConnection;
 
@@ -60,22 +63,60 @@ public class Player extends JFrame {
         if (playerID == 1){
             message.setText("You are player #1. You go first");
             opponentID = 2;
+            buttonsEnabled = true;
         } else {
             message.setText("You are player #2. Wait for your turn");
             opponentID = 1;
+            buttonsEnabled = false;
         }
+        toggleButtons();
 
         this.setVisible(true);
     }
 
+
     public void connectionToServer() {
         clientSideConnection = new ClientSideConnection();
+    }
+
+    public void setUpButtons() {
+        ActionListener al = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JButton btn = (JButton) e.getSource();
+                int bNum = Integer.parseInt(btn.getText());
+
+                message.setText("You clicked button #" + bNum + ". Now wait for player #" + opponentID);
+                turnsMade++;
+                System.out.println("Turns made  " + turnsMade);
+
+                buttonsEnabled = false;
+                toggleButtons();
+
+                myPoints += values[bNum - 1];
+                System.out.println("My points " + myPoints);
+            }
+        };
+
+        b1.addActionListener(al);
+        b2.addActionListener(al);
+        b3.addActionListener(al);
+        b4.addActionListener(al);
+
+    }
+
+    public void toggleButtons() {
+        b1.setEnabled(buttonsEnabled);
+        b2.setEnabled(buttonsEnabled);
+        b3.setEnabled(buttonsEnabled);
+        b4.setEnabled(buttonsEnabled);
     }
 
     public static void main(String[] args) {
         Player p = new Player(500, 100);
         p.connectionToServer();
         p.setUpGUI();
+        p.setUpButtons();
     }
 
     //Client Connection inner class
