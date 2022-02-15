@@ -69,7 +69,7 @@ public class Player extends JFrame {
             opponentID = 1;
             buttonsEnabled = false;
         }
-        toggleButtons();
+        //toggleButtons();
 
         this.setVisible(true);
     }
@@ -91,7 +91,7 @@ public class Player extends JFrame {
                 System.out.println("Turns made  " + turnsMade);
 
                 buttonsEnabled = false;
-                toggleButtons();
+                //toggleButtons();
 
                 myPoints += values[bNum - 1];
                 System.out.println("My points " + myPoints);
@@ -113,11 +113,24 @@ public class Player extends JFrame {
         b4.setEnabled(buttonsEnabled);
     }
 
+    public void startReceivingButtonsNums() {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    clientSideConnection.receiveButtonNum();
+                }
+            }
+        });
+        t.start();
+    }
+
     public static void main(String[] args) {
         Player p = new Player(500, 100);
         p.connectionToServer();
         p.setUpGUI();
         p.setUpButtons();
+        p.startReceivingButtonsNums();
     }
 
     //Client Connection inner class
@@ -153,13 +166,24 @@ public class Player extends JFrame {
             }
         }
 
-        public void sendButtonNum (int n) {
+        public void sendButtonNum(int n) {
             try {
                 dataOutputStream.writeInt(n);
                 dataOutputStream.flush();
             } catch (IOException ex) {
                 System.out.println("IOException from sendButtonNum() CSC");
             }
+        }
+
+        public int receiveButtonNum() {
+            int n = -1;
+            try {
+                n = dataInputStream.readInt();
+                System.out.println("Player #" + opponentID + " clicked button #" + n);
+            }catch (IOException ex){
+                System.out.println("IOException from receiveButtonNum() CSC");
+            }
+            return n;
         }
     }
 }

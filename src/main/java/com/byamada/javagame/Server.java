@@ -98,14 +98,25 @@ public class Server {
                     if(playerID == 1) {
                         player1ButtonNum = dataInputStream.readInt();
                         System.out.println("Player 1 clicked button #" + player1ButtonNum);
+                        player2.sendButtonNum(player1ButtonNum);
                     } else {
                         player2ButtonNum = dataInputStream.readInt();
                         System.out.println("Player 2 clicked button #" + player2ButtonNum);
+                        player1.sendButtonNum(player2ButtonNum);
                     }
                 }
 
             } catch (IOException ex) {
                 System.out.println("IOException from SSC run() ");
+            }
+        }
+
+        public void sendButtonNum (int n) {
+            try {
+                dataOutputStream.writeInt(n);
+                dataOutputStream.flush();
+            } catch (IOException ex) {
+                System.out.println("IOException from sendButtonNum() CSC");
             }
         }
     }
